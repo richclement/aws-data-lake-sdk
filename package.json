@@ -1,0 +1,34 @@
+{
+  "name": "aws-data-lake-sdk",
+  "version": "1.0.0",
+  "description": "SDK for interacting with the AWS data lake.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/{your-github-user}/{your-github-repository}.git"
+  },
+  "keywords": [
+    "aws",
+    "data",
+    "lake",
+    "sdk"
+  ],
+  "author": "Rich Clement",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/{your-github-user}/{your-github-repository}/issues"
+  },
+  "homepage": "https://github.com/{your-github-user}/{your-github-repository}#readme",
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "mocha": "^3.5.0"
+  },
+  "dependencies": {
+    "js-base64": "^2.1.9",
+    "moment": "^2.18.1",
+    "request": "^2.81.0"
+  }
+}

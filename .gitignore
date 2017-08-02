@@ -1,0 +1,24 @@
+**/node_modules
+**/dist
+**/.zip
+**/.DS_Store
+
+## Visual Studio
+.vs/
+
+## Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## Windows
+*.bak
+*.TMP
+*.tmp
+~$*.doc*
+~$*.xls*
+*.xlk
+~$*.ppt*
+*.~vsd*
