@@ -7,5 +7,4 @@ var DataLake = {
     Cart: require('./cart')
 };
 
-
 module.exports = DataLake;

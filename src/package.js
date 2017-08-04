@@ -165,51 +165,6 @@ class Package {
     return this._apiproxy.sendApiRequest(_path, 'GET', null, _authKey);
   }
 
-  importPackageManifest(params) {
-    if (!params) { throw new Error('params required'); }
-    if (!params.packageId) { throw new Error('packageId required'); }
-    if (!params.fileName) { throw new Error('fileName required'); }
-    if (!params.fileSize) { throw new Error('fileSize required'); }
-    if (!params.fileStream) { throw new Error('fileStream required'); }
-
-    //get the signed api credentials
-    let _authKey = this._creds.getAuthSignature();
-
-    // send api request
-    let _basename = path.basename(params.fileName);
-
-    let _payload = JSON.stringify({
-      name: _basename,
-      type: 'manifest',
-      content_type: 'application/json'
-    });
-    let _path = ['/prod/packages/', params.packageId, '/datasets/new'].join('');
-    var createPackagePromise = this._apiproxy.sendApiRequest(_path, 'POST', _payload, _authKey);
-
-    createPackagePromise.then((data) => {
-      var options = {
-        url: data.uploadUrl,
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': params.fileSize
-        }
-      };
-
-      params.fileStream.pipe(request.put(options).on('response', function (response) {
-        if (response.statusCode !== 200) {
-          console.log('The manifest entry was created, but the file failed to upload.');
-          throw new Error('The manifest entry was created, but the file failed to upload.');
-        }
-
-        let _datasetPath = ['/prod/packages/', params.packageId, '/datasets/', data.dataset_id].join('');
-        return this._apiproxy.sendApiRequest(_datasetPath, 'GET', null, _authKey)
-          .then((dataset) => {
-            return dataset;
-          });
-      }));
-    });
-  }
-
   /**
     * terms - search terms
     *
@@ -249,7 +204,7 @@ class Package {
       _payload.name = params.packageName;
     }
 
-    if (program.packageDescription) {
+    if (params.packageDescription) {
       _payload.description = params.packageDescription;
     }
 
@@ -261,5 +216,70 @@ class Package {
     return this._apiproxy.sendApiRequest(_path, 'PUT', JSON.stringify(_payload), _authKey);
   }
 
+  /**
+   * packageId - The package identifier
+   * fileSize - size of file being uploaded
+   * fileStream - stream to the dataset file being uploaded
+   * contentType - content type of the dataset file being uploaded
+   *
+   * var params = {
+   *   packageId: 'ABC123',
+   *   fileSize: 1200
+   *   fileStream: <STREAM>,
+   *   contentType: 'text/html'
+   * }
+   **/
+  uploadPackageDataset(params) {
+    throw new Error('not implemented');
+
+    //get the signed api credentials
+    let _authKey = this._creds.getAuthSignature();
+
+    // send api request
+    let _basename = path.basename(params.file);
+
+    let _payload = JSON.stringify({
+      name: _basename,
+      type: 'dataset',
+      content_type: params.contentType
+    });
+    let _path = ['/prod/packages/', params.packageId, '/datasets/new'].join('');
+    _apiproxy.sendApiRequest(_path, 'POST', _payload, _authKey, function (err, data) {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+
+      let _stream = fs.createReadStream(params.file);
+
+      var options = {
+        url: data.uploadUrl,
+        headers: {
+          'Content-Type': params.contentType,
+          'Content-Length': params.fileSize
+        }
+      };
+
+      fs.createReadStream(params.file).pipe(request.put(options).on('response', function (response) {
+
+        if (response.statusCode !== 200) {
+          console.log('The manifest entry was created, but the file failed to upload.');
+          process.exit(1);
+        }
+
+        let _datasetPath = ['/prod/packages/', params.packageId, '/datasets/', data.dataset_id].join('');
+        _apiproxy.sendApiRequest(_datasetPath, 'GET', null, _authKey, function (
+          err, dataset) {
+          if (err) {
+            console.log(err);
+            process.exit(1);
+          }
+
+          console.log(JSON.stringify(dataset));
+        });
+      }));
+    });
+  }
 }
+
 module.exports = Package;

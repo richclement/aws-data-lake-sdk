@@ -457,7 +457,7 @@ describe('Package', () => {
 
   describe('describePackageDatasets', () => { });
 
-  describe('importPackageManifest', () => { });
+  describe('uploadPackageDataset', () => { });
 
   describe('updatePackage', () => { });
 
