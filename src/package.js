@@ -100,7 +100,7 @@ class Package {
     let _authKey = this._creds.getAuthSignature();
 
     // send api request
-    let _path = ['/prod/packages/', params.packageId, '/datasets/', program.datasetId].join('');
+    let _path = ['/prod/packages/', params.packageId, '/datasets/', params.datasetId].join('');
     return this._apiproxy.sendApiRequest(_path, 'DELETE', null, _authKey);
   }
 

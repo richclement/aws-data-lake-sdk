@@ -42,6 +42,29 @@ describe('Package', () => {
       });
     });
 
+    it('params must have a non-null terms property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.search({ terms: null });
+      });
+    });
+
+    it('should reject on error', () => {
+      var _metadata = new DataLake.Metadata(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _metadata.describeRequiredMetadata()
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
+    });
+
     it('should return results with empty array', () => {
 
       var _package = new DataLake.Package(Object.assign({
@@ -132,7 +155,7 @@ describe('Package', () => {
       });
     });
 
-    it('params must have a non-null packageName value', () => {
+    it('params must have a non-null packageName property', () => {
       var _package = new DataLake.Package(Object.assign({
         https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
       }, testConfig));
@@ -142,7 +165,7 @@ describe('Package', () => {
       });
     });
 
-    it('params must have a non-null packageDescription object', () => {
+    it('params must have a non-null packageDescription property', () => {
       var _package = new DataLake.Package(Object.assign({
         https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
       }, testConfig));
@@ -150,6 +173,19 @@ describe('Package', () => {
       assert.throws(function () {
         var s = _package.createPackage({ packageName: 'unit test', packageDescription: null });
       });
+    });
+
+    it('should reject on error', () => {
+      var _metadata = new DataLake.Metadata(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _metadata.describeRequiredMetadata()
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
     });
 
     it('creates an empty package without metadata', () => {
@@ -201,4 +237,228 @@ describe('Package', () => {
       });
     });
   });
+
+  describe('DeletePackage', () => {
+    it('returns a promise', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var actual = _package.deletePackage({ packageId: 'abcd12345' });
+      var isPromise = Promise.prototype.isPrototypeOf(actual);
+      assert.equal(isPromise, true);
+    });
+
+    it('requires a non-null params object', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.deletePackage(null);
+      });
+    });
+
+    it('params must have a non-null packageId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.deletePackage({ packageId: null });
+      });
+    });
+
+    it('should reject on error', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _package.deletePackage({ packageId: 'abcd12345' })
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
+    });
+
+    it('should return an empty object after delete', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      return _package.deletePackage({ packageId: 'abc123456' })
+        .then(data => {
+          assert.isNotNull(data, 'returned a null object');
+        }).catch(err => {
+          assert.fail('should not have thrown');
+        });
+    });
+  });
+
+  describe('describePackage', () => {
+    it('returns a promise', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var actual = _package.describePackage({ packageId: 'abcd12345' });
+      var isPromise = Promise.prototype.isPrototypeOf(actual);
+      assert.equal(isPromise, true);
+    });
+
+    it('requires a non-null params object', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.describePackage(null);
+      });
+    });
+
+    it('params must have a non-null packageId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.describePackage({ packageId: null });
+      });
+    });
+
+    it('should reject on error', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _package.describePackage({ packageId: 'abcd12345' })
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
+    });
+
+
+  });
+
+  describe('deletePackageDataset', () => {
+    it('returns a promise', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var actual = _package.deletePackageDataset({ packageId: 'abcd12345', datasetId: 'xyz098765' });
+      var isPromise = Promise.prototype.isPrototypeOf(actual);
+      assert.equal(isPromise, true);
+    });
+
+    it('requires a non-null params object', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.deletePackageDataset(null);
+      });
+    });
+
+    it('params must have a non-null packageId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.deletePackageDataset({ packageId: null, datasetId: 'xyz098765' });
+      });
+    });
+
+    it('params must have a non-null datasetId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.deletePackageDataset({ packageId: 'abcd12345', datasetId: null });;
+      });
+    });
+
+    it('should reject on error', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _package.deletePackageDataset({ packageId: 'abcd12345', datasetId: 'xyz098765' })
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
+    });
+
+  });
+
+  describe('describePackageDataset', () => {
+    it('returns a promise', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var actual = _package.describePackageDataset({ packageId: 'abcd12345', datasetId: 'xyz098765' });
+      var isPromise = Promise.prototype.isPrototypeOf(actual);
+      assert.equal(isPromise, true);
+    });
+
+    it('requires a non-null params object', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.describePackageDataset(null);
+      });
+    });
+
+    it('params must have a non-null packageId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.describePackageDataset({ packageId: null, datasetId: 'xyz098765' });
+      });
+    });
+
+    it('params must have a non-null datasetId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.describePackageDataset({ packageId: 'abcd12345', datasetId: null });
+      });
+    });
+
+    it('should reject on error', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _package.describePackageDataset({ packageId: 'abcd12345', datasetId: 'xyz098765' })
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
+    });
+
+  });
+
+  describe('describePackageDatasets', () => { });
+
+  describe('importPackageManifest', () => { });
+
+  describe('updatePackage', () => { });
+
 });
