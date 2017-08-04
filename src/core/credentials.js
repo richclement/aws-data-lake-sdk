@@ -14,7 +14,7 @@ class Credentials {
     getAuthSignature() {
 
         // 'SJxiAV_R:f10e347df150638393502dfc8466d18b'
-        let kDate = crypto.createHmac('sha256', "DATALAKE4" + this.secretAccessKey)
+        let kDate = crypto.createHmac('sha256', "DATALAKE4" + this._secretAccessKey)
             .update(moment().utc().format('YYYYMMDD'));
 
         let kEndpoint = crypto.createHmac('sha256', kDate.digest('base64')).update(this._apiEndpointHost);

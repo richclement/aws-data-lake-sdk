@@ -1,42 +1,45 @@
 'use strict';
 
-let https = require('https');
-
 class ApiProxy {
     constructor(config) {
+        this._https = config.https;
         this._apiEndpointHost = config.apiEndpointHost;
     }
 
-    sendApiRequest(path, method, body, authkey, cb) {
-        let _options = this.buildRequestOptionSet(path, method, authkey);
-        let request = https.request(_options, function (response) {
-            // data is streamed in chunks from the server
-            // so we have to handle the "data" event
-            let buffer = '',
-                data,
-                route;
+    sendApiRequest(path, method, body, authkey) {
+        return new Promise(
+            (resolve, reject) => {
+                var _options = this.buildRequestOptionSet(path, method, authkey);
+                var request = this._https.request(_options, (response) => {
+                    // data is streamed in chunks from the server
+                    // so we have to handle the "data" event
+                    var buffer = '',
+                        data,
+                        route;
 
-            response.on('data', function (chunk) {
-                buffer += chunk;
+                    response.on('data', (chunk) => {
+                        buffer += chunk;
+                    });
+
+                    response.on('end', (err) => {
+                        data = JSON.parse(buffer);
+                        //console.log(JSON.stringify(data));
+                        //cb(null, data);
+                        resolve(data);
+                    });
+                });
+
+                if (body) {
+                    request.write(body);
+                }
+
+                request.end();
+
+                request.on('error', (e) => {
+                    //cb(['Error occurred when sending', this._apiEndpointHost, path, 'request.'].join(' '), null);
+                    reject(['Error occurred when sending', this._apiEndpointHost, path, 'request.'].join(' '));
+                });
             });
-
-            response.on('end', function (err) {
-                data = JSON.parse(buffer);
-                cb(null, data);
-            });
-        });
-
-        if (body) {
-            request.write(body);
-        }
-
-        request.end();
-
-        request.on('error', (e) => {
-            console.error(e);
-            cb(['Error occurred when sending', this._apiEndpointHost, path, 'request.'].join(
-                ' '), null);
-        });
     }
 
     buildRequestOptionSet(apipath, apimethod, authkey) {

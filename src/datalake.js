@@ -1,9 +1,11 @@
-#!/usr/bin/env node
-
 'use strict';
 
-module.exports = {
-    CreatePackage: require('./datalake-create-package'),
-    CreatePackageMetadata: require('./datalake-create-package-metadata'),
-    Search: require('./datalake-search')
+var DataLake = {
+    https: require('https'),
+    Package: require('./package'),
+    Metadata: require('./metadata'),
+    Cart: require('./cart')
 };
+
+
+module.exports = DataLake;

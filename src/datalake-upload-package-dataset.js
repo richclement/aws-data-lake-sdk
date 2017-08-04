@@ -1,6 +1,5 @@
 'use strict';
 
-let program = require('commander');
 let Creds = require('./core/credentials.js');
 let ApiProxy = require('./core/apiproxy.js');
 const path = require('path');
