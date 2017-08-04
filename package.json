@@ -29,8 +29,7 @@
     "moment": "^2.18.1"
   },
   "dependencies": {
-    "js-base64": "^2.1.9",
-    "request": "^2.81.0",
-    "request-promise": "^4.2.1"
+    "got": "^7.1.0",
+    "js-base64": "^2.1.9"
   }
 }

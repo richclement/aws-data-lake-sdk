@@ -23,8 +23,6 @@ class ApiProxy {
 
                     response.on('end', (err) => {
                         data = JSON.parse(buffer);
-                        //console.log(JSON.stringify(data));
-                        //cb(null, data);
                         resolve(data);
                     });
                 });

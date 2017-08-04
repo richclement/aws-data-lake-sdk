@@ -455,9 +455,36 @@ describe('Package', () => {
 
   });
 
-  describe('describePackageDatasets', () => { });
+  describe('describePackageDatasets', () => {
+    it('', () => { });
 
-  describe('uploadPackageDataset', () => { });
+    it('', () => { });
+  });
+
+  describe('uploadPackageDataset', () => {
+    it('integration test', () => {
+      let _integrationPackage = new DataLake.Package();
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      return _integrationPackage.uploadPackageDataset({
+        packageId: 'SyWqf-WPb',
+        fileSize: buffer.byteLength,
+        fileName: 'testFile.txt',
+        fileStream: bufferStream,
+        contentType: 'text/plain'
+      }).then(response => {
+        console.log(JSON.stringify(response));
+      }).catch(err => {
+        console.log(JSON.stringify(err));
+      });
+    });
+
+    it('', () => { });
+  });
 
   describe('updatePackage', () => {
     it('returns a promise', () => {
@@ -527,10 +554,6 @@ describe('Package', () => {
         });
 
     });
-
-    it('', () => { });
-
-    it('', () => { });
 
   });
 

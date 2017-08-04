@@ -3,8 +3,7 @@
 let Creds = require('./core/credentials.js');
 let ApiProxy = require('./core/apiproxy.js');
 const path = require('path');
-const request = require('request');
-const requestPromise = require('request-promise');
+const got = require('got');
 
 class Package {
 
@@ -218,67 +217,61 @@ class Package {
 
   /**
    * packageId - The package identifier
+   * fileName - name of file being uploaded
    * fileSize - size of file being uploaded
    * fileStream - stream to the dataset file being uploaded
    * contentType - content type of the dataset file being uploaded
    *
    * var params = {
-   *   packageId: 'ABC123',
+   *   packageId: 'abcd12345',
+   *   fileName: 'newfile.pdf'
    *   fileSize: 1200
    *   fileStream: <STREAM>,
    *   contentType: 'text/html'
    * }
    **/
   uploadPackageDataset(params) {
-    throw new Error('not implemented');
+    if (!params) { throw new Error('params required'); }
+    if (!params.packageId) { throw new Error('packageId required'); }
+    if (!params.fileName) { throw new Error('fileName required'); }
+    if (!params.fileSize) { throw new Error('fileSize required'); }
+    if (!params.fileStream) { throw new Error('fileStream required'); }
+    if (!params.contentType) { throw new Error('contentType required'); }
 
-    //get the signed api credentials
-    let _authKey = this._creds.getAuthSignature();
+    var result = new Promise((resolve, reject) => {
+      //get the signed api credentials
+      let _authKey = this._creds.getAuthSignature();
 
-    // send api request
-    let _basename = path.basename(params.file);
+      // send api request
+      let _basename = path.basename(params.fileName);
 
-    let _payload = JSON.stringify({
-      name: _basename,
-      type: 'dataset',
-      content_type: params.contentType
-    });
-    let _path = ['/prod/packages/', params.packageId, '/datasets/new'].join('');
-    _apiproxy.sendApiRequest(_path, 'POST', _payload, _authKey, function (err, data) {
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
-
-      let _stream = fs.createReadStream(params.file);
-
-      var options = {
-        url: data.uploadUrl,
-        headers: {
-          'Content-Type': params.contentType,
-          'Content-Length': params.fileSize
-        }
-      };
-
-      fs.createReadStream(params.file).pipe(request.put(options).on('response', function (response) {
-
-        if (response.statusCode !== 200) {
-          console.log('The manifest entry was created, but the file failed to upload.');
-          process.exit(1);
-        }
-
-        let _datasetPath = ['/prod/packages/', params.packageId, '/datasets/', data.dataset_id].join('');
-        _apiproxy.sendApiRequest(_datasetPath, 'GET', null, _authKey, function (
-          err, dataset) {
-          if (err) {
-            console.log(err);
-            process.exit(1);
-          }
-
-          console.log(JSON.stringify(dataset));
+      let _payload = JSON.stringify({
+        name: _basename,
+        type: 'dataset',
+        content_type: params.contentType
+      });
+      let _datasetId = null;
+      let _path = ['/prod/packages/', params.packageId, '/datasets/new'].join('');
+      this._apiproxy.sendApiRequest(_path, 'POST', _payload, _authKey)
+        .then(creationResponse => {
+          var options = {
+            headers: {
+              'Content-Type': params.contentType,
+              'Content-Length': params.fileSize
+            },
+            body: params.fileStream,
+            method: 'PUT'
+          };
+          _datasetId = creationResponse.dataset_id;
+          return got(creationResponse.uploadUrl, options);
+        }).then(putResponse => {
+          let _datasetPath = ['/prod/packages/', params.packageId, '/datasets/', _datasetId].join('');
+          return resolve(this._apiproxy.sendApiRequest(_datasetPath, 'GET', null, _authKey));
+        }).catch(err => {
+          return reject(err);
         });
-      }));
     });
+    return result;
   }
 }
 
