@@ -5,9 +5,9 @@ const Mocks = require('./mocks');
 const DataLake = require('../src/datalake');
 
 const testConfig = {
-  accessKey: 'BkPHU0gD-',
-  secretAccessKey: 'e79515d429314e85ef06b22fe61bb839',
-  apiEndpointHost: '52em6ph983.execute-api.us-east-1.amazonaws.com'
+  accessKey: '',
+  secretAccessKey: '',
+  apiEndpointHost: ''
 };
 
 describe('Metadata', () => {
@@ -119,7 +119,7 @@ describe('Metadata', () => {
           ScannedCount: 1,
           Items: [{
             created_at: "2017-08-03T20:07:37Z",
-            created_by: "datalake_evestment_com",
+            created_by: "datalake_owner",
             metadata_id: "xyz098765",
             package_id: "abcd12345",
             metadata: [{ value: "first-tag", tag: "first-value" }, { value: "second-tag", tag: "second-value" }]

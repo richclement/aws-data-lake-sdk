@@ -6,9 +6,9 @@ const moment = require('moment');
 const Mocks = require('./mocks');
 
 const testConfig = {
-  accessKey: 'BkPHU0gD-',
-  secretAccessKey: 'e79515d429314e85ef06b22fe61bb839',
-  apiEndpointHost: '52em6ph983.execute-api.us-east-1.amazonaws.com'
+  accessKey: '',
+  secretAccessKey: '',
+  apiEndpointHost: ''
 };
 
 describe('Package', () => {
@@ -196,7 +196,7 @@ describe('Package', () => {
         deleted: false,
         description: "test package",
         name: "test package",
-        owner: "datalake_evestment_com",
+        owner: "datalake_owner",
       };
       var _package = new DataLake.Package(Object.assign({
         https: Mocks.mockSuccessfulHttp(JSON.stringify(httpResponse))
@@ -220,7 +220,7 @@ describe('Package', () => {
         deleted: false,
         description: "test package",
         name: "test package",
-        owner: "datalake_evestment_com",
+        owner: "datalake_owner",
       };
       var _package = new DataLake.Package(Object.assign({
         https: Mocks.mockSuccessfulHttp(JSON.stringify(httpResponse))
@@ -459,6 +459,79 @@ describe('Package', () => {
 
   describe('uploadPackageDataset', () => { });
 
-  describe('updatePackage', () => { });
+  describe('updatePackage', () => {
+    it('returns a promise', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var actual = _package.updatePackage({ packageId: 'abcd12345' });
+      var isPromise = Promise.prototype.isPrototypeOf(actual);
+      assert.equal(isPromise, true);
+    });
+
+    it('requires a non-null params object', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.updatePackage(null);
+      });
+    });
+
+    it('params must have a non-null packageId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.updatePackage({ packageId: null });
+      });
+    });
+
+    it('should reject on error', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      return _package.updatePackage({ packageId: 'abcd12345' })
+        .then(() => {
+          assert.fail('expected rejection');
+        }).catch(err => {
+          assert.ok(true);
+        });
+    });
+
+    it('updating the package should return the new package information', () => {
+      var httpResponse = {
+        updated_at: "2017-08-03T15:32:48Z",
+        package_id: "abcd12345",
+        deleted: false,
+        created_at: "2017-08-03T15:32:48Z",
+        owner: "datalake_owner",
+        description: "unit test updated description",
+        name: "unit test updated title"
+      };
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify(httpResponse))
+      }, testConfig));
+
+      return _package.updatePackage({ packageId: 'abcd12345', packageName: 'unit test updated title', packageDescription: 'unit test updated description' })
+        .then(result => {
+          assert.isNotNull(result, 'result should not be null');
+          assert.equal(result.name, httpResponse.name, 'name should be the same');
+          assert.equal(result.description, httpResponse.description, 'descriptions should be the same');
+        }).catch(err => {
+          assert.fail('unexpected failure');
+        });
+
+    });
+
+    it('', () => { });
+
+    it('', () => { });
+
+  });
 
 });
