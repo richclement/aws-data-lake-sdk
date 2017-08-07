@@ -4,7 +4,7 @@
   "description": "SDK for interacting with the AWS Data Lake Solution..",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --colors --timeout 2000"
+    "test": "mocha --colors"
   },
   "repository": {
     "type": "git",
