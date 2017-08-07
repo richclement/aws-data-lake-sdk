@@ -268,7 +268,6 @@ class Package {
             method: 'PUT'
           };
           _datasetId = creationResponse.dataset_id;
-          console.log(creationResponse.uploadUrl);
           return this._config.got(creationResponse.uploadUrl, options);
         }).then(putResponse => {
           let _datasetPath = ['/prod/packages/', params.packageId, '/datasets/', _datasetId].join('');

@@ -339,8 +339,6 @@ describe('Package', () => {
           assert.ok(true);
         });
     });
-
-
   });
 
   describe('deletePackageDataset', () => {
