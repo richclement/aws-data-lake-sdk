@@ -1,6 +1,6 @@
 'use strict';
 
-const DataLake = require('../src/datalake');
+const DataLake = require('../lib/datalake');
 const assert = require('chai').assert;
 const moment = require('moment');
 const Mocks = require('./mocks');

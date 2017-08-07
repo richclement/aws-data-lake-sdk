@@ -2,7 +2,7 @@
 
 const assert = require('chai').assert;
 const Mocks = require('./mocks');
-const DataLake = require('../src/datalake');
+const DataLake = require('../lib/datalake');
 
 const testConfig = {
   accessKey: 'my-access-key',
