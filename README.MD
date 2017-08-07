@@ -12,12 +12,12 @@ $ npm install --save aws-data-lake-sdk
 ## Usage
 
 ### Require
-```
+``` javascript
 const Datalake = require('aws-data-lake-sdk');
 ```
 
 ### Create a Package
-```
+``` javascript
 // The config to create a Datalake object requires the following properties
 // An API Access Key can be created in the Administration->Users section
 // An API Secret Access Key can be created in the My Account->Profile section
@@ -53,7 +53,7 @@ package.createPackage({
 ```
 
 ### Add a file to a Package
-```
+``` javascript
 const fs = require('fs');
 const package = new Datalake.Package(datalakeConfig);
 var fileName = 'new-data-file.zip';
@@ -92,8 +92,8 @@ package.uploadPackageDataset({
 ```
 
 ### Get & Update Metadata 
-```
-const metadata = new Datalake.Metadata(daalakeConfig);
+``` javascript
+const metadata = new Datalake.Metadata(datalakeConfig);
 
 // Get metadata for a package
 var currentMetadata = null;
