@@ -6,6 +6,10 @@ let ApiProxy = require('./core/apiproxy.js');
 class Metadata {
   constructor(config) {
     if (!config) { throw new Error('config required'); }
+    if (!config.accessKey) { throw new Error('accessKey required'); }
+    if (!config.secretAccessKey) { throw new Error('secretAccessKey required'); }
+    if (!config.apiEndpointHost) { throw new Error('apiEndpointHost required'); }
+
     if (!config.https) {
       config.https = require('https');
     }

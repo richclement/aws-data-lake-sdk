@@ -1,7 +1,7 @@
 {
   "name": "aws-data-lake-sdk",
-  "version": "0.8.0",
-  "description": "SDK for interacting with the AWS data lake.",
+  "version": "0.7.0",
+  "description": "SDK for interacting with the AWS Data Lake Solution..",
   "main": "index.js",
   "scripts": {
     "test": "mocha --colors --timeout 2000"
@@ -24,12 +24,11 @@
   "homepage": "https://github.com/richclement/aws-data-lake-sdk#readme",
   "devDependencies": {
     "chai": "^4.1.0",
-    "chai-as-promised": "^7.1.1",
-    "mocha": "^3.5.0",
-    "moment": "^2.18.1"
+    "mocha": "^3.5.0"
   },
   "dependencies": {
     "got": "^7.1.0",
-    "js-base64": "^2.1.9"
+    "js-base64": "^2.1.9",
+    "moment": "^2.18.1"
   }
 }

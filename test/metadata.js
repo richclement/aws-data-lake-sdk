@@ -5,9 +5,9 @@ const Mocks = require('./mocks');
 const DataLake = require('../src/datalake');
 
 const testConfig = {
-  accessKey: '',
-  secretAccessKey: '',
-  apiEndpointHost: ''
+  accessKey: 'my-access-key',
+  secretAccessKey: 'my-secret-access-key',
+  apiEndpointHost: 'my-api-endpoint'
 };
 
 describe('Metadata', () => {

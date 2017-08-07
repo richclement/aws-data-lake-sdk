@@ -3,15 +3,20 @@
 let Creds = require('./core/credentials.js');
 let ApiProxy = require('./core/apiproxy.js');
 const path = require('path');
-const got = require('got');
 
 class Package {
 
   constructor(config) {
     if (!config) { throw new Error('config required'); }
+    if (!config.accessKey) { throw new Error('accessKey required'); }
+    if (!config.secretAccessKey) { throw new Error('secretAccessKey required'); }
+    if (!config.apiEndpointHost) { throw new Error('apiEndpointHost required'); }
 
     if (!config.https) {
       config.https = require('https');
+    }
+    if (!config.got) {
+      config.got = require('got');
     }
 
     this._config = config;
@@ -263,7 +268,8 @@ class Package {
             method: 'PUT'
           };
           _datasetId = creationResponse.dataset_id;
-          return got(creationResponse.uploadUrl, options);
+          console.log(creationResponse.uploadUrl);
+          return this._config.got(creationResponse.uploadUrl, options);
         }).then(putResponse => {
           let _datasetPath = ['/prod/packages/', params.packageId, '/datasets/', _datasetId].join('');
           return resolve(this._apiproxy.sendApiRequest(_datasetPath, 'GET', null, _authKey));

@@ -15,7 +15,7 @@ module.exports = {
         res.headers = {
           'content-type': 'application/json'
         };
-        
+
         setTimeout(() => {
           callback(res);
         }, 10);
@@ -52,6 +52,15 @@ module.exports = {
 
         return out;
       }
+    };
+  },
+  mockSuccessfulGot: () => {
+    return function (url, options) {
+      var response = {
+        body: {},
+        url: 'https://testurl.test'
+      };
+      return Promise.resolve(response);
     };
   }
 };

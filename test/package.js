@@ -6,9 +6,9 @@ const moment = require('moment');
 const Mocks = require('./mocks');
 
 const testConfig = {
-  accessKey: '',
-  secretAccessKey: '',
-  apiEndpointHost: ''
+  accessKey: 'my-access-key',
+  secretAccessKey: 'my-secret-access-key',
+  apiEndpointHost: 'my-api-endpoint'
 };
 
 describe('Package', () => {
@@ -456,34 +456,193 @@ describe('Package', () => {
   });
 
   describe('describePackageDatasets', () => {
-    it('', () => { });
+    //it('', () => { });
 
-    it('', () => { });
+    //it('', () => { });
   });
 
   describe('uploadPackageDataset', () => {
-    it('integration test', () => {
-      let _integrationPackage = new DataLake.Package();
+    it('returns a promise', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
 
       var stream = require('stream');
       var buffer = new Buffer('Test data.');
       var bufferStream = new stream.PassThrough();
       bufferStream.end(buffer);
 
-      return _integrationPackage.uploadPackageDataset({
-        packageId: 'SyWqf-WPb',
-        fileSize: buffer.byteLength,
-        fileName: 'testFile.txt',
+      var actual = _package.uploadPackageDataset({
+        packageId: 'abcd12345',
+        fileSize: 2000,
+        fileName: 'unittest.txt',
         fileStream: bufferStream,
         contentType: 'text/plain'
-      }).then(response => {
-        console.log(JSON.stringify(response));
-      }).catch(err => {
-        console.log(JSON.stringify(err));
+      });
+      var isPromise = Promise.prototype.isPrototypeOf(actual);
+      assert.equal(isPromise, true);
+    });
+
+    it('requires a non-null params object', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.uploadPackageDataset(null);
       });
     });
 
-    it('', () => { });
+    it('params must have a non-null packageId property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      assert.throws(function () {
+        var s = _package.uploadPackageDataset({
+          packageId: null,
+          fileSize: 2000,
+          fileName: 'unittest.txt',
+          fileStream: bufferStream,
+          contentType: 'text/plain'
+        });
+      });
+    });
+
+    it('params must have a non-null fileName property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      assert.throws(function () {
+        var s = _package.uploadPackageDataset({
+          packageId: 'abcd12345',
+          fileSize: 2000,
+          fileName: null,
+          fileStream: bufferStream,
+          contentType: 'text/plain'
+        });
+      });
+    });
+
+    it('params must have a non-null fileSize property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      assert.throws(function () {
+        var s = _package.uploadPackageDataset({
+          packageId: 'abcd12345',
+          fileSize: null,
+          fileName: 'unittest.txt',
+          fileStream: bufferStream,
+          contentType: 'text/plain'
+        });
+      });
+    });
+
+    it('params must have a non-null fileStream property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      assert.throws(function () {
+        var s = _package.uploadPackageDataset({
+          packageId: 'abcd12345',
+          fileSize: 2000,
+          fileName: 'unittest.txt',
+          fileStream: null,
+          contentType: 'text/plain'
+        });
+      });
+    });
+
+    it('params must have a non-null contentType property', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({}))
+      }, testConfig));
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      assert.throws(function () {
+        var s = _package.uploadPackageDataset({
+          packageId: 'abcd12345',
+          fileSize: 2000,
+          fileName: 'unittest.txt',
+          fileStream: fileStream,
+          contentType: null
+        });
+      });
+    });
+
+    it('should reject on error creating dataset', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockErrorHttp()
+      }, testConfig));
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      return _package.uploadPackageDataset({
+        packageId: 'abcd12345',
+        fileSize: 2000,
+        fileName: 'unittest.txt',
+        fileStream: bufferStream,
+        contentType: 'text/plain'
+      }).then(() => {
+        assert.fail('expected rejection');
+      }).catch(err => {
+        assert.ok(true);
+      });
+    });
+
+    it('should return the dataset information on success', () => {
+      var _package = new DataLake.Package(Object.assign({
+        https: Mocks.mockSuccessfulHttp(JSON.stringify({
+          dataset_id: 'wxyz09876',
+          uploadUrl: 'https://unit.test'
+        })),
+        got: Mocks.mockSuccessfulGot()
+      }, testConfig));
+
+      var stream = require('stream');
+      var buffer = new Buffer('Test data.');
+      var bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      return _package.uploadPackageDataset({
+        packageId: 'abcd12345',
+        fileSize: 2000,
+        fileName: 'unittest.txt',
+        fileStream: bufferStream,
+        contentType: 'text/plain'
+      }).then(createResponse => {
+        assert.isNotNull(createResponse);
+      }).catch(err => {
+        assert.fail('expected success');
+      });
+
+    });
   });
 
   describe('updatePackage', () => {
